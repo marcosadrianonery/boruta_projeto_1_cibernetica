@@ -208,7 +208,18 @@ for pasta in pastasName:
          fig_names[2]: fig_plote[2], fig_names[3]: fig_plote[3]},
         index=names_boruta)
 
-    df.plot.bar(color=cores, width=width)
+    df.plot.bar(color=cores, width=width, figsize=(20, 10), fontsize=18)
+    # plt.legend(fontsize=20)
+    #plt.xticks(pos, city)
+    plt.xticks(rotation=0)
+
+    #plt.xlabel('Métricas', fontsize=20)
+    plt.ylabel('Score', fontsize=20)
+    plt.legend(bbox_to_anchor=(0, -0.135, 1., 1.), loc='lower center',
+               ncol=2, mode="expand", borderaxespad=0., fontsize=16)
+    plt.title('Resultado para o database: ' + pasta, fontsize=24)
+    plt.autoscale(axis='x', tight=True)
+
     plt.savefig('imagens/' + pasta + '_results.png')
 
     #################################################################
@@ -239,5 +250,5 @@ for pasta in pastasName:
 
     arquivo.close()
 
-plt.show()
+# plt.show()
 # ax.show()
