@@ -7,11 +7,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
 
-def filterBoruta(X, y, printed):
+def filterBoruta(X, y, model, n_estimators, perc, printed):
 
-    rf = RandomForestClassifier(n_jobs=-1, max_depth=5)
-    feat_selector = BorutaPy(rf, n_estimators='auto',
-                             random_state=1, max_iter=100)
+    #rf = RandomForestClassifier(n_jobs=-1, max_depth=5)
+    feat_selector = BorutaPy(model, n_estimators=n_estimators,
+                             max_iter=100, perc=perc)
 
     feat_selector.fit(functions.retiraItens(X), y)
 

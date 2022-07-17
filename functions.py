@@ -123,3 +123,21 @@ def read_arquivo(nome):
     # print("YYYYY: ", Ytrain)
 
     return nameFeatures, normalizarDados(Xtrain.astype(float)), normalizarDados(Xtest.astype(float)), Ytrain.astype(float), Ytest.astype(float)
+
+
+def escolheFeatures(vetorDados, features):
+
+    vetorFiltro = []
+    print(vetorDados.T)
+
+    for coluna in features:
+
+        index = coluna[0]
+
+        if coluna[1] == 1:
+            vetorFiltro.append(vetorDados.T[index])
+
+    print(np.array(vetorFiltro))
+    print(np.shape(vetorFiltro))
+    print(features)
+    return np.array(vetorFiltro).T

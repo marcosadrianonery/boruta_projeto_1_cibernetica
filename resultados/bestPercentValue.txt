@@ -1,0 +1,13 @@
+######################################################################
+#   Porcentagem para melhor resultado Statlog (Heart): 
+Breast Cancer Wisconsin: 80
+Planning Relax: 10
+Bupa: 30
+Diabetes: 10
+HCC: 20
+Hepatitis: 40
+Parkinsons (LPD): 10
+SaHeart: 80
+SPECTF Heart: 40
+Statlog (Heart): 10
+######################################################################
