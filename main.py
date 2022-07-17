@@ -18,7 +18,7 @@ pastasName = ["Breast Cancer Wisconsin",
               "SPECTF Heart", "Statlog (Heart)"]
 
 
-#pastasName = ["Planning Relax"]
+#pastasName = ["SaHeart"]
 
 
 saidaTeste = {}
@@ -174,7 +174,7 @@ for pasta in pastasName:
     print("-"*100)
 
     #################################################################
-    #fig, ax = plt.subplots(2, 1)
+    # fig, ax = plt.subplots(2, 1)
 
     mat_conf = confusion_matrix(y_teste, y_predict, labels=model_test.classes_)
     confusionMatrix = ConfusionMatrixDisplay(
@@ -187,7 +187,7 @@ for pasta in pastasName:
 
     #################################################################
 
-    width = 0.75
+    width = 0.7
 
     fig_plote = [
         metricas_cross,
@@ -208,17 +208,24 @@ for pasta in pastasName:
          fig_names[2]: fig_plote[2], fig_names[3]: fig_plote[3]},
         index=names_boruta)
 
-    df.plot.bar(color=cores, width=width, figsize=(20, 10), fontsize=18)
+    df.plot.bar(color=cores, width=width, figsize=(
+        20, 10), fontsize=20)
     # plt.legend(fontsize=20)
-    #plt.xticks(pos, city)
+    # plt.xticks(pos, city)
     plt.xticks(rotation=0)
 
-    #plt.xlabel('Métricas', fontsize=20)
-    plt.ylabel('Score', fontsize=20)
-    plt.legend(bbox_to_anchor=(0, -0.135, 1., 1.), loc='lower center',
-               ncol=2, mode="expand", borderaxespad=0., fontsize=16)
+    # plt.xlabel('Métricas', fontsize=20)
+    plt.ylabel('Score', fontsize=22)
+    #plt.legend(bbox_to_anchor=(0.5, 0.1), loc='upper center',ncol=2, borderaxespad=1.0, borderpad=2, fontsize=20, mode="expand")
+
+    plt.legend(bbox_to_anchor=(0.5, 0.0),
+               loc='upper center', ncol=2, fontsize=20, borderaxespad=2.0, mode="expand")
+
+    # mode="expand",
+
     plt.title('Resultado para o database: ' + pasta, fontsize=24)
     plt.autoscale(axis='x', tight=True)
+    plt.tight_layout()
 
     plt.savefig('imagens/' + pasta + '_results.png')
 
@@ -230,13 +237,77 @@ for pasta in pastasName:
              "ROC_AUC:   ", "AUPR:      ",
              "RMSE:      "]
 
+    sequencia = list(range(1, np.size(nameFeatures)))
+
+    SupportIndex = np.block(
+        [[nameFeatures[:-1].T], [saidaTeste[pasta]['Support'].T]]).T
+    UndecidedIndex = np.block(
+        [[nameFeatures[:-1].T], [saidaTeste[pasta]['Undecided'].T]]).T
+    AcceptedIndex = np.block(
+        [[nameFeatures[:-1].T], [saidaTeste[pasta]['Accepted'].T]]).T
+    rankingIndex = np.block(
+        [[nameFeatures[:-1].T], [saidaTeste[pasta]['Ranking'].T]]).T
+
+    SupportIndex = np.array(list(enumerate(saidaTeste[pasta]['Support'].T, 1)))
+    UndecidedIndex = np.array(
+        list(enumerate(saidaTeste[pasta]['Undecided'].T, 1)))
+    AcceptedIndex = np.array(
+        list(enumerate(saidaTeste[pasta]['Accepted'].T, 1)))
+    rankingIndex = np.array(list(enumerate(saidaTeste[pasta]['Ranking'].T, 1)))
+
+    '''
+    SupportIndex = np.block(
+        [["Suporta:", ""], [SupportIndex]])
+    UndecidedIndex = np.block(
+        [["Indeciso:", ""], [UndecidedIndex]])
+    AcceptedIndex = np.block(
+        [["Aceito:", ""], [AcceptedIndex]])
+    rankingIndex = np.block(
+        [["Ranking:", ""], [rankingIndex]])
+    '''
+    separador = np.array(['|'] * np.size(nameFeatures[:-1]))
+    separador = separador.reshape(np.size(nameFeatures[:-1]), 1)
+    print(separador.reshape(np.size(nameFeatures[:-1]), 1))
+
+    feat_boruta = np.block(
+        [AcceptedIndex, separador, SupportIndex, separador, UndecidedIndex, separador, rankingIndex, separador])
+
+    print(feat_boruta)
+
+    # feat_boruta = np.block([[feat_boruta_1], [feat_boruta_2]])
+
+    # print(feat_boruta)
     arquivo = open('resultados/' + pasta + '.txt', 'w')
+
+    arquivo.write("#"*70 + "\n")
+    arquivo.write("#" + "   Database " + pasta + ": \n")
+    arquivo.write("#"*70 + "\n")
+    arquivo.write(
+        "   Aceito:      | Suporta:      | Indeciso:     | Ranking: " + "\n")
+    string_out = re.sub("\[|\]|", "", str(feat_boruta))
+    string_out = re.sub("\'", "  ", string_out)
+    string_out = re.sub("True", "True       ", string_out)
+    string_out = re.sub("False", "False      ", string_out)
+    arquivo.write(str(string_out) + "\n")
+    '''
+    arquivo.write("#"*70 + "\n")
+    arquivo.write("#    Boruta Suporta: \n" +
+                  str(SupportIndex) + "\n")
+    arquivo.write("-"*70 + "\n")
+    arquivo.write("#    Boruta Indeciso: \n" +
+                  str(UndecidedIndex) + "\n")
+    arquivo.write("-"*70 + "\n")
+    arquivo.write("#    Boruta Aceita: \n" +
+                  str(AcceptedIndex) + "\n")
+    arquivo.write("-"*70 + "\n")
+    arquivo.write("#    Boruta Ranking: \n" +
+                  str(rankingIndex) + "\n")
+    '''
+    arquivo.write("#"*70 + "\n\n")
 
     for index, metrica in enumerate(fig_plote):
         write = np.block([names, metrica])
         arquivo.write("#"*70 + "\n")
-        arquivo.write("#" + "   Database " + pasta + ": \n")
-        arquivo.write("-"*70 + "\n")
         arquivo.write("#" + "   tipo de dados: " + fig_names[index] + ": \n")
         arquivo.write("#"*70 + "\n")
         arquivo.write("\n")
@@ -249,6 +320,7 @@ for pasta in pastasName:
     # arquivo.write(metricas_cross)
 
     arquivo.close()
-
+    sequencia = list(range(1, np.size(nameFeatures)))
+    print(separador)
 # plt.show()
 # ax.show()
