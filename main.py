@@ -16,12 +16,9 @@ pastasName = ["Breast Cancer Wisconsin", "Planning Relax",
               "Parkinsons (LPD)", "SaHeart", "SPECTF Heart",
               "Statlog (Heart)"]
 
-
 # pastasName = ["Planning Relax"]
 
-
 saidaTeste = {}
-
 bestPercent = {}
 bestPercentValue = {}
 
